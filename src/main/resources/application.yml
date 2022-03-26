@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:6432/daily
+    username: postgres
+    password: Jpsoft@2020
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+server:
+  servlet:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+  tomcat:
+    uri-encoding: UTF-8
