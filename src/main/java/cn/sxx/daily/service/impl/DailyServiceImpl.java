@@ -35,6 +35,11 @@ public class DailyServiceImpl implements IDailyService {
     @Override
     public Daily findOne(String date) {
         LocalDate recordDate = LocalDate.parse(date);
-        return dailyRepository.findFirstByRecordDate(recordDate);
+        Daily daily = dailyRepository.findFirstByRecordDate(recordDate);
+        if (daily == null) {
+            daily = new Daily();
+            daily.setRecordDate(recordDate);
+        }
+        return daily;
     }
 }

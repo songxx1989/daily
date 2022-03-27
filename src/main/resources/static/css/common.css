@@ -17,6 +17,8 @@ td {
 .minus, .add {
     font-size: 24px;
     cursor: pointer;
+    user-select: none;
+    background: #ccc;
 }
 
 .value input {

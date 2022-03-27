@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<section>
+<section style="padding: 20px;">
     <button class="btn-save">保存</button>
 </section>
 
@@ -16,7 +16,7 @@
         <td class="label">日期</td>
         <td class="minus" onclick="changeDate('recordDate', -1)">-</td>
         <td class="value">
-            <input type="date" name="recordDate">
+            <input type="text" name="recordDate">
         </td>
         <td class="add" onclick="changeDate('recordDate', 1)">+</td>
     </tr>
@@ -46,19 +46,19 @@
     </tr>
     <tr>
         <td class="label">起床</td>
-        <td class="minus">-</td>
+        <td class="minus" onclick="changeTime('getUpTime', -15)">-</td>
         <td class="value">
-            <input type="time" name="getUpTime" value="06:30">
+            <input type="text" name="getUpTime" value="06:30">
         </td>
-        <td class="add">+</td>
+        <td class="add" onclick="changeTime('getUpTime', 15)">+</td>
     </tr>
     <tr>
         <td class="label">睡觉</td>
-        <td class="minus">-</td>
+        <td class="minus" onclick="changeTime('sleepTime', -15)">-</td>
         <td class="value">
-            <input type="time" name="sleepTime" value="22:00">
+            <input type="text" name="sleepTime" value="22:00">
         </td>
-        <td class="add">+</td>
+        <td class="add" onclick="changeTime('sleepTime', 15)">+</td>
     </tr>
 </table>
 
@@ -67,7 +67,16 @@
 <script src="/daily/js/jquery-3.6.0.min.js"></script>
 <script src="/daily/js/moment.min.js"></script>
 <script>
+    let id;
+    let DATE_FORMAT = 'YYYY-MM-DD';
+    let TIME_FORMAT = 'HH:mm';
     let $recordDate;
+    let $deepSquat;
+    let $pushUp;
+    let $abRoller;
+    let $bicycle;
+    let $getUpTime;
+    let $sleepTime;
     let $btnSave;
 
     $(function () {
@@ -76,20 +85,23 @@
     });
 
     function init() {
-        $recordDate = $('[name="recordDate"]');
-        $recordDate.val(moment().format('YYYY-MM-DD'));
-
+        $recordDate = $('[name=recordDate]');
+        $recordDate.val(moment().format(DATE_FORMAT));
+        $deepSquat = $('[name=deepSquat]');
+        $pushUp = $('[name=pushUp]');
+        $abRoller = $('[name=abRoller]');
+        $bicycle = $('[name=bicycle]');
+        $getUpTime = $('[name=getUpTime]');
+        $sleepTime = $('[name=sleepTime]');
         $btnSave = $('.btn-save');
 
+        updateData();
     }
 
     function listen() {
         $recordDate.change(updateData);
 
-        $btnSave.click(function () {
-            console.error("btn save clicked")
-        });
-
+        $btnSave.click(saveData);
     }
 
     function changeValue(name, step) {
@@ -102,16 +114,49 @@
     function changeDate(name, step) {
         let $input = $(`[name=${name}]`);
         let value = $input.val();
-        value = moment(value).add(step, 'd').format('YYYY-MM-DD');
+        value = moment(value).add(step, 'd').format(DATE_FORMAT);
         $input.val(value);
         updateData();
     }
 
+    function changeTime(name, step) {
+        let $input = $(`[name=${name}]`);
+        let value = $input.val();
+        value = moment(value, TIME_FORMAT).add(step, 'm').format(TIME_FORMAT);
+        $input.val(value);
+    }
+
     function updateData() {
         let date = $recordDate.val();
-        $.get(`/daily/api/daily?date=${date}`, function (resp) {
-            console.error(resp)
+        $.get(`/daily/api/day?date=${date}`, function (resp) {
+            if (resp.code == 200) {
+                let data = resp.data;
+                id = data.id;
+                $recordDate.val(data.recordDate);
+                $deepSquat.val(data.deepSquat);
+                $pushUp.val(data.pushUp);
+                $abRoller.val(data.abRoller);
+                $bicycle.val(data.bicycle);
+                $getUpTime.val(data.getUpTime || '06:30');
+                $sleepTime.val(data.sleepTime || '22:00');
+            }
         })
+    }
+
+    function saveData() {
+        let data = {id};
+        data.uid = 'sxx';
+        data.recordDate = $recordDate.val();
+        data.deepSquat = $deepSquat.val();
+        data.pushUp = $pushUp.val();
+        data.abRoller = $abRoller.val();
+        data.bicycle = $bicycle.val();
+        data.getUpTime = $getUpTime.val();
+        data.sleepTime = $sleepTime.val();
+
+        $.post('/daily/api/day', data, function (resp) {
+            console.error(resp)
+        });
     }
 
 
