@@ -25,4 +25,11 @@ public class DailyServiceImplTest {
         dailyService.save(daily);
     }
 
+
+    @Test
+    public void findOneTest() {
+        Daily daily = dailyService.findOne("2022-03-26");
+        System.out.println(daily);
+    }
+
 }

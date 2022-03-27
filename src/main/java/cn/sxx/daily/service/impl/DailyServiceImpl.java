@@ -29,11 +29,12 @@ public class DailyServiceImpl implements IDailyService {
     /**
      * 查询日课
      *
-     * @param recordDate
+     * @param date
      * @return
      */
     @Override
-    public Daily findOne(LocalDate recordDate) {
+    public Daily findOne(String date) {
+        LocalDate recordDate = LocalDate.parse(date);
         return dailyRepository.findFirstByRecordDate(recordDate);
     }
 }

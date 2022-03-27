@@ -15,5 +15,7 @@ server:
       force: true
       charset: UTF-8
       enabled: true
+    context-path: /daily
   tomcat:
     uri-encoding: UTF-8
+  port: 9001

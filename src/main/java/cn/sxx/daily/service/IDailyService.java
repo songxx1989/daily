@@ -21,6 +21,6 @@ public interface IDailyService {
      * @param date
      * @return
      */
-    Daily findOne(LocalDate date);
+    Daily findOne(String date);
 
 }

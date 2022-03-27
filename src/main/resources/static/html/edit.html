@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑</title>
+    <link rel="stylesheet" href="/daily/css/common.css">
+</head>
+<body>
+
+<section>
+    <button class="btn-save">保存</button>
+</section>
+
+<table>
+    <tr>
+        <td class="label">日期</td>
+        <td class="minus" onclick="changeDate('recordDate', -1)">-</td>
+        <td class="value">
+            <input type="date" name="recordDate">
+        </td>
+        <td class="add" onclick="changeDate('recordDate', 1)">+</td>
+    </tr>
+    <tr>
+        <td class="label">深蹲</td>
+        <td class="minus" onclick="changeValue('deepSquat', -30)">-</td>
+        <td class="value"><input name="deepSquat" type="text" value="0">个</td>
+        <td class="add" onclick="changeValue('deepSquat', 30)">+</td>
+    </tr>
+    <tr>
+        <td class="label">俯卧撑</td>
+        <td class="minus" onclick="changeValue('pushUp', -15)">-</td>
+        <td class="value"><input name="pushUp" type="text" value="0">个</td>
+        <td class="add" onclick="changeValue('pushUp', 15)">+</td>
+    </tr>
+    <tr>
+        <td class="label">健腹轮</td>
+        <td class="minus" onclick="changeValue('abRoller', -10)">-</td>
+        <td class="value"><input name="abRoller" type="text" value="0">来回</td>
+        <td class="add" onclick="changeValue('abRoller', 10)">+</td>
+    </tr>
+    <tr>
+        <td class="label">自行车</td>
+        <td class="minus" onclick="changeValue('bicycle', - 10)">-</td>
+        <td class="value"><input name="bicycle" type="text" value="0">分钟</td>
+        <td class="add" onclick="changeValue('bicycle', 10)">+</td>
+    </tr>
+    <tr>
+        <td class="label">起床</td>
+        <td class="minus">-</td>
+        <td class="value">
+            <input type="time" name="getUpTime" value="06:30">
+        </td>
+        <td class="add">+</td>
+    </tr>
+    <tr>
+        <td class="label">睡觉</td>
+        <td class="minus">-</td>
+        <td class="value">
+            <input type="time" name="sleepTime" value="22:00">
+        </td>
+        <td class="add">+</td>
+    </tr>
+</table>
+
+</body>
+
+<script src="/daily/js/jquery-3.6.0.min.js"></script>
+<script src="/daily/js/moment.min.js"></script>
+<script>
+    let $recordDate;
+    let $btnSave;
+
+    $(function () {
+        init();
+        listen();
+    });
+
+    function init() {
+        $recordDate = $('[name="recordDate"]');
+        $recordDate.val(moment().format('YYYY-MM-DD'));
+
+        $btnSave = $('.btn-save');
+
+    }
+
+    function listen() {
+        $recordDate.change(updateData);
+
+        $btnSave.click(function () {
+            console.error("btn save clicked")
+        });
+
+    }
+
+    function changeValue(name, step) {
+        let $input = $(`[name=${name}]`);
+        let value = parseInt($input.val());
+        value += step;
+        $input.val(value);
+    }
+
+    function changeDate(name, step) {
+        let $input = $(`[name=${name}]`);
+        let value = $input.val();
+        value = moment(value).add(step, 'd').format('YYYY-MM-DD');
+        $input.val(value);
+        updateData();
+    }
+
+    function updateData() {
+        let date = $recordDate.val();
+        $.get(`/daily/api/daily?date=${date}`, function (resp) {
+            console.error(resp)
+        })
+    }
+
+
+</script>
+</html>
